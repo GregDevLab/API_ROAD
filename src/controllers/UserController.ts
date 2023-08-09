@@ -15,8 +15,7 @@ export default class UserController extends Controller {
 
 	getAll = async (req: Request, res: Response) => {
 		try {
-			const selectQuery = req.query.select && JSON.parse(req.query.select as string);
-			// exemple { "select": { "id": true, "name": true }
+			const selectQuery = this.parser(req.query.select as string);
 			const users = await this.services.findAll(selectQuery);
 			return this.sendSuccess(res, 200, 'Récupération des utilisateurs réussis', users);
 		} catch (error) {
@@ -27,7 +26,8 @@ export default class UserController extends Controller {
 	getById = async (req: Request, res: Response) => {
 		try {
 			const { id } = req.params;
-			const user = await this.services.findById(id);
+			const selectQuery = this.parser(req.query.select as string);
+			const user = await this.services.findById(id, selectQuery);
 			return this.sendSuccess(res, 200, 'Récupération de l\'utilisateur réussie', user);
 		} catch (error) {
 			return this.sendError(res, 500, 'Echec lors de la récupération de l\'utilisateur', error);
@@ -42,6 +42,16 @@ export default class UserController extends Controller {
 			return this.sendSuccess(res, 200, 'Mise à jour de l\'utilisateur réussie', user);
 		} catch (error) {
 			return this.sendError(res, 500, 'Echec lors de la mise à jour de l\'utilisateur', error);
+		}
+	}
+
+	delete = async (req: Request, res: Response) => {
+		try {
+			const { id } = req.params;
+			const user = await this.services.delete(id);
+			return this.sendSuccess(res, 200, 'Suppression de l\'utilisateur réussie', user);
+		} catch (error) {
+			return this.sendError(res, 500, 'Echec lors de la suppression de l\'utilisateur', error);
 		}
 	}
 
