@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 
 export default class AuthServices {
 	repository: Repository;
+	USERS: string = 'users';
 	constructor(private userRepository: Repository) {
 		this.repository = userRepository
 	}
@@ -16,8 +17,11 @@ export default class AuthServices {
 			password: hashedPassword,
 			name
 		}
+		const isExist = await this.repository.findByField('email', email);
+		if (isExist) throw new Error('Cet email est déjà utilisé');
 		const user  = await this.repository.create(data);
 		const {password, ...userRest} = user;
+		CacheHandler.deleteCacheByKey([this.USERS]);
 		return userRest
 	}
 
@@ -43,11 +47,11 @@ export default class AuthServices {
 
 	async refreshToken(refreshToken: string) {
 		const decoded = await TokenHandler.verifyRefreshToken(refreshToken);
-		console.log("🚀 ~ file: AuthServices.ts:46 ~ UserServices ~ refreshToken ~ decoded:", decoded)
 		const user = await this.repository.findById(decoded.data);
 		const {password, refreshToken: oldRefreshToken, ...safeUser} = user;
 		
 		if (!user || (oldRefreshToken !== refreshToken)) throw new Error('Le rafraichissement du token a échoué');
+
 
 		const token = await TokenHandler.generateToken(safeUser);
 		const newRefreshToken = await TokenHandler.generateRefreshToken(user.id);

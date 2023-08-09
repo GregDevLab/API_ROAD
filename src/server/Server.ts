@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import 'dotenv/config'
 import prisma from '@src/prisma'
-import { authRouter, userRouter } from '@src/routes'
+import { authRouter, roadmapRouter, userRouter } from '@src/routes'
 import cookieParser from 'cookie-parser'
 import checkAuth from '@src/middleware/checkAuth'
 import cors from 'cors'
@@ -34,6 +34,7 @@ export default class Server {
 		protectedRoutes = () => {
 			this.app.use(checkAuth)
 			this.app.use('/api/user', userRouter)
+			this.app.use('/api/roadmap', roadmapRouter)
 		}
 
 		start = () => {

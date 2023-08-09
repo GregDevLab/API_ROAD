@@ -7,7 +7,7 @@ export default class TokenHandler {
 	constructor() {
 	}
 	static async generateToken(data:Data) {
-		const token = await jwt.sign({ id: data.id, role: data.role }, process.env.JWT_SECRET, { expiresIn: 60 });
+		const token = await jwt.sign({ id: data.id, role: data.role }, process.env.JWT_SECRET, { expiresIn: 60 * 15 });
 		return token;
 	}
 

@@ -43,7 +43,7 @@ export default class AuthController extends Controller {
 			
 			return this.sendSuccess(res, 200, 'Inscription réussie', user);
 		} catch (error) {
-			return this.sendError(res, 500, 'Echec lors de l\'inscription', error);
+			return this.sendError(res, 500, error.message ?? 'Echec lors de l\'inscription', error);
 		}
 	}
 
