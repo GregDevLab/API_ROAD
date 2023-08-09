@@ -6,6 +6,10 @@ export default class Controller implements IController {
 		constructor() {
 		}
 
+		parser(data: string) {
+			return data && JSON.parse(data);
+		}
+
 		sendSuccess(res: Response,code: number,message: string,object: any) {
 			res.status(code).json({ status: 'success', message, object});
 		}
