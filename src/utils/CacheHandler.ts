@@ -1,7 +1,15 @@
 import cache from "@src/cache"
 
 type keyType = [key:string, id?:string | number | undefined, subKey?:string | number | undefined]
+interface CacheData {
+	[key:string]: any
+}
 export default class CacheHandler {
+
+
+	private static debugCaches = (methode) => {
+		console.log("🚀 ~ file: CacheHandler ~ debugCaches ~ "+ methode, cache.keys())
+	}
 
 	/**
    * Met en cache les données si la clé n'existe pas déjà.
@@ -13,6 +21,7 @@ export default class CacheHandler {
 		if(!cache.keys().includes(key.join('-'))) {
 			cache.set(key.join('-'), data, ttl ?? 60 * 60);
 		}
+		// this.debugCaches('setCacheIfNotExists')
 	}
 
 	/**
@@ -21,11 +30,12 @@ export default class CacheHandler {
    * @return {any | null} Les données depuis le cache ou null si la clé n'est pas trouvée.
    */
 	static getCache = (key: keyType) => {
+		let data:CacheData|null  = null
 		if(cache.keys().includes(key.join('-'))) {
-			console.log("🚀 ~ file: CacheHandler.ts:15 ~ CacheHandler ~ cache.get(key.join('-')):", cache.get(key.join('-')))
-			return cache.get(key.join('-')) 
+			data = cache.get(key.join('-'))  as CacheData
 		} 
-		return null
+		// this.debugCaches('getCache')
+		return data
 	}
 
 	/**
@@ -37,6 +47,7 @@ export default class CacheHandler {
 	static updateCache = (key: keyType, data: any, ttl?:number) => {
 		this.deleteCacheByKey(key)
 		cache.set(key.join('-'), data, ttl ?? 60 *60);
+		// this.debugCaches('updateCache')
 	}
 
 	/**
@@ -49,6 +60,7 @@ export default class CacheHandler {
 				cache.del(cacheKey)
 			}
 		})
+		// this.debugCaches('deleteCacheByKey')
 	}
 
 }

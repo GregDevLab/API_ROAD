@@ -78,7 +78,8 @@ export default class AuthController extends Controller {
 	authByToken = async (req: any, res: any) => {
 		try {
 			const { token } = req.cookies;
-			const user = await this.services.authByToken(token);
+			const selectedOptions = this.parser(req.query.select);
+			const user = await this.services.authByToken(token, selectedOptions);
 			return this.sendSuccess(res, 200, 'Authentification réussie', user);
 		} catch (error) {
 			return this.sendError(res, 403, 'Echec lors de l\'authentification', error);

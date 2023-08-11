@@ -47,7 +47,10 @@ export default class RoadmapController extends Controller {
 
 	update = async (req: any, res: any) => {
 		try {
-			return this.sendSuccess(res, 200, 'Roadmap modifiée', []);
+			const { id } = req.params;
+			const data = req.body
+			const roadmap = await this.services.update(id, data)
+			return this.sendSuccess(res, 200, 'Roadmap modifiée', roadmap);
 		} catch (error) {
 			return this.sendError(res, 500, 'Echec lors de la modification de la roadmap', error);
 		}
@@ -55,9 +58,12 @@ export default class RoadmapController extends Controller {
 
 	delete = async (req: any, res: any) => {
 		try {
+			const { id } = req.params;
+			const roadmap = await this.services.delete(id)
 			return this.sendSuccess(res, 200, 'Roadmap supprimée', []);
 		} catch (error) {
 			return this.sendError(res, 500, 'Echec lors de la suppression de la roadmap', error);
 		}
 	}
+	
 }

@@ -1,10 +1,13 @@
+import { Prisma } from "@prisma/client";
 import { Repository } from "@src/core";
 import { CacheHandler, TokenHandler } from "@src/utils";
 import bcrypt from 'bcrypt';
+import { json } from "body-parser";
 
 export default class AuthServices {
 	repository: Repository;
 	USERS: string = 'users';
+	USER: string = 'user';
 	constructor(private userRepository: Repository) {
 		this.repository = userRepository
 	}
@@ -70,11 +73,17 @@ export default class AuthServices {
 		return true
 	}
 
-	async authByToken(token: string) {
+	async authByToken(token: string, select:Prisma.UserSelect) {
 		const decoded = await TokenHandler.verifyToken(token);
-		const user = await this.repository.findById(decoded.id);
+		const userFromCache = CacheHandler.getCache([this.USER, decoded.id, JSON.stringify(select)]);
+		// if (userFromCache) return userFromCache;
+
+		const user = await this.repository.findById(decoded.id, select);
 		if (!user) throw new Error('L\'authentification a échoué');
 		const {password, refreshToken, ...safeUser} = user;
+
+		CacheHandler.setCacheIfNotExists([this.USER, decoded.id, JSON.stringify(select)], safeUser);
+
 		return safeUser
 	}
 }
