@@ -26,6 +26,7 @@ model User {
 	createdAt 		DateTime @default(now())
 	updatedAt 		DateTime @updatedAt
 	roadmaps		Roadmap[]
+	steps			Step[]
 }
 
 model Roadmap {
@@ -34,10 +35,25 @@ model Roadmap {
 	title     		String
 	description     String
 	author			User	 @relation(fields: [authorId], references: [id])
+	steps			Step[]
 	authorId		String	 @db.ObjectId
 	rating			Float	 @default(0)
 	numberRatings	Int		 @default(0)
 	isPublished		Boolean  @default(false)
 	createdAt 		DateTime @default(now())
 	updatedAt 		DateTime @updatedAt
+}
+model Step {
+	id        			String   @id @default(auto()) @map("_id") @db.ObjectId
+	title     			String	 @default("Nouvelle étape")
+	content				String?
+	author				User	 @relation(fields: [authorId], references: [id])
+	roadmap				Roadmap	 @relation(fields: [roadmapId], references: [id])
+	roadmapId			String	 @db.ObjectId
+	authorId			String	 @db.ObjectId
+	rating				Float	 @default(0)
+	numberRatings		Int		 @default(0)
+	isPublished			Boolean  @default(false)
+	createdAt 			DateTime @default(now())
+	updatedAt 			DateTime @updatedAt
 }

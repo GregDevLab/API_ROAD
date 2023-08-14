@@ -19,7 +19,7 @@ export default class UserController extends Controller {
 			const users = await this.services.findAll(selectQuery);
 			return this.sendSuccess(res, 200, 'Récupération des utilisateurs réussis', users);
 		} catch (error) {
-				return this.sendError(res, 500, 'Echec lors de la récupérations des utilisateurs', error);
+			return this.sendError(res, 500, 'Echec lors de la récupérations des utilisateurs', error);
 		}
 	}
 
