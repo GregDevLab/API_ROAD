@@ -36,8 +36,10 @@ export default class StepController extends Controller {
 
 	create = (req:Request, res:Response) => {
 		try{
+			if(!req.user) return this.sendError(res, 401, 'Vous devez être connecté pour créer une étape', []);
 			const data = req.body;
-			const step = this.services.create(data);
+			const authorId = req.user.id;
+			const step = this.services.create(data, authorId);
 			return this.sendSuccess(res, 200, 'Création de l\'étape réussie', step);
 		} catch(error) {
 			return this.sendError(res, 500, 'Echec lors de la création de l\'étape', error);

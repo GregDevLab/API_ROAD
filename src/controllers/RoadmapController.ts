@@ -26,7 +26,8 @@ export default class RoadmapController extends Controller {
 	getById = async (req: any, res: any) => {
 		try {
 			const { id } = req.params;
-			const roadmap = await this.services.findById(id);
+			const selectQuery = this.parser(req.query.select as string);
+			const roadmap = await this.services.findById(id,selectQuery );
 			return this.sendSuccess(res, 200, 'Roadmap', roadmap);
 		} catch (error) {
 			return this.sendError(res, 500, 'Echec lors de la récupération de la roadmap', error);

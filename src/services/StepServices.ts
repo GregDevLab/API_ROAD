@@ -39,9 +39,23 @@ export default class StepServices extends Services {
 		return sanitize;
 	}
 
-	async create(data: Prisma.StepCreateInput){
+	async create(data: Prisma.StepUncheckedCreateInput, authorId: number | string){
 		CacheHandler.deleteCacheByKey([this.STEPS]);
-		return await this.repository.create(data);
+		const {roadmapId, ...stepData} = data;
+		const dataWithconnect = {
+			...stepData,
+			roadmap: {
+				connect: {
+					id: roadmapId
+				}
+			},
+			author: {
+				connect: {
+					id: authorId
+				}
+			}
+		}
+		return await this.repository.create(dataWithconnect);
 	}
 
 	async update(id: number | string, data: Step){
