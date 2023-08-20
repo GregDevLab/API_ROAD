@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import 'dotenv/config'
 import prisma from '@src/prisma'
-import { authRouter, roadmapRouter, stepRouter, uploadRouter, userRouter } from '@src/routes'
+import { authRouter, fetchUrlRouter, roadmapRouter, stepRouter, uploadRouter, userRouter } from '@src/routes'
 import cookieParser from 'cookie-parser'
 import checkAuth from '@src/middleware/checkAuth'
 import cors from 'cors'
@@ -31,6 +31,7 @@ export default class Server {
 
 		routes = ()  => {
 			this.app.use('/api/auth', authRouter)
+			this.app.use('/api/fetchurl', fetchUrlRouter)
 			// this.app.use('/api/user', userRouter)
 		}
 

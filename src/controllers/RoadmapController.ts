@@ -15,7 +15,6 @@ export default class RoadmapController extends Controller {
 	getAll = async (req: any, res: any) => {
 		try {
 			const selectQuery = this.parser(req.query.select as string);
-			console.log("🚀 ~ file: RoadmapController.ts:17 ~ RoadmapController ~ getAll= ~ selectQuery:", selectQuery)
 			const roadmaps = await this.services.findAll(selectQuery)
 			return this.sendSuccess(res, 200, 'Liste des roadmaps', roadmaps);
 		} catch (error) {

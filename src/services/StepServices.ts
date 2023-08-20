@@ -28,7 +28,7 @@ export default class StepServices extends Services {
 	}
 
 	async findById(id: number | string, select?:Prisma.StepSelect){
-		const stepFromCache = CacheHandler.getCache([this.STEP,JSON.stringify(select)]);
+		const stepFromCache = CacheHandler.getCache([this.STEP,id,JSON.stringify(select)]);
 		if(stepFromCache) return stepFromCache;
 
 		const originalStep = await this.repository.findById(id, select);
@@ -61,7 +61,6 @@ export default class StepServices extends Services {
 	async update(id: number | string, data: Step){
 		const originalStep = await this.repository.update(id, data);
 		const sanitize = originalStep.author ? this.sanitize(originalStep) : originalStep;
-
 
 		CacheHandler.updateCache([this.STEP, id], sanitize);
 		CacheHandler.deleteCacheByKey([this.STEPS]);
