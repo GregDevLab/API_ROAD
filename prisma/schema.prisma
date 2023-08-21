@@ -15,6 +15,10 @@ enum Role {
 	ADMIN
 }
 
+enum ReactionType {
+	LIKE
+	DISLIKE
+}
 model User {
 	id        		String   @id @default(auto()) @map("_id") @db.ObjectId
 	email     		String   @unique
@@ -27,6 +31,7 @@ model User {
 	updatedAt 		DateTime @updatedAt
 	roadmaps		Roadmap[]
 	steps			Step[]
+	reactions 		Reaction[]
 }
 
 model Roadmap {
@@ -42,6 +47,7 @@ model Roadmap {
 	isPublished		Boolean  @default(false)
 	createdAt 		DateTime @default(now())
 	updatedAt 		DateTime @updatedAt
+	reactions 		Reaction[]
 }
 model Step {
 	id        			String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -56,4 +62,13 @@ model Step {
 	isPublished			Boolean  @default(false)
 	createdAt 			DateTime @default(now())
 	updatedAt 			DateTime @updatedAt
+}
+
+model Reaction {
+	id       	String       @id @default(auto()) @map("_id") @db.ObjectId
+	type     	ReactionType
+	userId   	String       @db.ObjectId
+	roadmapId   String    	 @db.ObjectId
+	user     	User         @relation(fields: [userId], references: [id])
+    roadmap     Roadmap      @relation(fields: [roadmapId], references: [id])
 }

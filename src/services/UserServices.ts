@@ -31,7 +31,6 @@ export default class UserServices extends Services {
 	async findById(id: number | string, select?:Prisma.UserSelect) {
 		const userFromCache = CacheHandler.getCache([this.USER, id,JSON.stringify(select)]);
 		if(userFromCache) return userFromCache;
-		console.log('not cached')
 		const originalUser = await this.repository.findById(id, select)
 		const safeUser = this.sanitize(originalUser);
 

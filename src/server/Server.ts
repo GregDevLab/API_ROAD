@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import 'dotenv/config'
 import prisma from '@src/prisma'
-import { authRouter, fetchUrlRouter, roadmapRouter, stepRouter, uploadRouter, userRouter } from '@src/routes'
+import { authRouter, fetchUrlRouter, reactionRouter, roadmapRouter, stepRouter, uploadRouter, userRouter } from '@src/routes'
 import cookieParser from 'cookie-parser'
 import checkAuth from '@src/middleware/checkAuth'
 import cors from 'cors'
@@ -34,15 +34,17 @@ export default class Server {
 			this.app.use('/api/fetchurl', fetchUrlRouter)
 			// this.app.use('/api/user', userRouter)
 		}
-
+		
 		protectedRoutes = () => {
 			this.app.use(checkAuth)
 			this.app.use('/api/user', userRouter)
 			this.app.use('/api/roadmap', roadmapRouter)
+			this.app.use('/api/reaction', reactionRouter)
 			this.app.use('/api/upload', uploadRouter)
 			this.app.use('/api/step', stepRouter)
 		}
 
+	
 		start = () => {
 				prisma.$connect()
 				.then(() => 

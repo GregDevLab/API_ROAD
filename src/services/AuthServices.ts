@@ -75,15 +75,11 @@ export default class AuthServices {
 
 	async authByToken(token: string, select:Prisma.UserSelect) {
 		const decoded = await TokenHandler.verifyToken(token);
-		const userFromCache = CacheHandler.getCache([this.USER, decoded.id, JSON.stringify(select)]);
-		// if (userFromCache) return userFromCache;
 
 		const user = await this.repository.findById(decoded.id, select);
 		if (!user) throw new Error('L\'authentification a échoué');
 		const {password, refreshToken, ...safeUser} = user;
-
-		CacheHandler.setCacheIfNotExists([this.USER, decoded.id, JSON.stringify(select)], safeUser);
-
+		safeUser.id = decoded.id
 		return safeUser
 	}
 }

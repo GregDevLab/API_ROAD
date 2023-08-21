@@ -29,6 +29,14 @@ export default class Repository implements Irepository {
 		return await this.instance.findMany({...select})
 	}
 
+	/**.
+	 * @param select - Critères de sélection optionnels.
+	 * @returns Une promesse qui résout le nombre de ligne trouvé.
+	 */
+	async count(select:any): Promise<any> {
+		return await this.instance.count(select)
+	}
+
 	/**
 	 * Trouve une instance par son ID.
 	 * @param id - L'ID de l'instance à trouver.
@@ -67,5 +75,10 @@ export default class Repository implements Irepository {
 	 */
 	async findByField(field:string, value:string, select?:any): Promise<any> {
 		return await this.instance.findUnique({ where: { [field]: value }, select })
+	}
+
+
+	async existingField(params:any): Promise<any> {
+		return await this.instance.findFirst({...params})
 	}
 }

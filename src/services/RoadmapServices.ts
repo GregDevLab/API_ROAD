@@ -21,21 +21,23 @@ export default class RoadmapServices extends Services{
 	async findAll(select?:Prisma.RoadmapSelect) {
 		const roadmapsFromCache = CacheHandler.getCache([this.ROADMAPS, JSON.stringify(select)]) as RoadmapWithAuthor[] | undefined;
 		if(roadmapsFromCache) return roadmapsFromCache;
-
 		const roadmaps = await this.repository.findAll(select) as RoadmapWithAuthor[];
+		const rawCount = await this.repository.count({where: {isPublished: true}});
 		const sanitize = roadmaps.map(roadmap => ({
 				...roadmap,
 				author: roadmap.author ? this.sanitize(roadmap.author) : null
 		}))
-		
-		CacheHandler.setCacheIfNotExists([this.ROADMAPS, JSON.stringify(select)], sanitize, 60 * 30);
-		return sanitize;
+		const result = {
+			data: sanitize,
+			count: rawCount
+    	};
+		CacheHandler.setCacheIfNotExists([this.ROADMAPS, JSON.stringify(select)], result, 60 * 30);
+		return result;
 	}
 
 	async findById(id: number | string, select?:Prisma.RoadmapSelect) {
 		const roadmapFromCache = CacheHandler.getCache([this.ROADMAP, id,JSON.stringify(select)]) as RoadmapWithAuthor;
 		if(roadmapFromCache) return roadmapFromCache;
-
 		const roadmap = await this.repository.findById(id, select) as RoadmapWithAuthor;
 		const sanitize = roadmap.author ? this.sanitize(roadmap.author) : roadmap
 
@@ -70,7 +72,6 @@ export default class RoadmapServices extends Services{
 		CacheHandler.deleteCacheByKey([this.ROADMAP, id]);
 		CacheHandler.deleteCacheByKey([this.ROADMAPS]);
 		const roadmap = await this.repository.delete(id);
-		console.log("🚀 ~ file: RoadmapServices.ts:66 ~ RoadmapServices ~ delete ~ roadmap:", roadmap)
 		if(roadmap) {
 			fs.unlink(`${path.join(__dirname, '../uploads')}/${roadmap.imageUrl}`, (err) => {
 				if (err) {

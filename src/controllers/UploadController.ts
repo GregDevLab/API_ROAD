@@ -10,7 +10,6 @@ export default class UploadController extends Controller {
 	}
 
 	uploadFile = async (req: any, res: any) => {
-		console.log("🚀 ~ file: UploadController.ts:13 ~ UploadController ~ uploadFile= ~ req:", req)
 		if (!fs.existsSync(uploadsDir)) {
 			fs.mkdirSync(uploadsDir);
 		}
@@ -33,7 +32,6 @@ export default class UploadController extends Controller {
 				} else if (err) {
 					return this.sendError(res, 500, 'Echec lors de l\'upload', err);
 				}
-				console.log("🚀 ~ file: UploadController.ts:100 ~ UploadController ~ req.file",req.file )
 				return this.sendSuccess(res, 200, 'Upload réussi', req.file);
 			})
 		} catch (error) {

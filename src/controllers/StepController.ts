@@ -40,7 +40,6 @@ export default class StepController extends Controller {
 			const data = req.body;
 			const authorId = req.user.id;
 			const step = await this.services.create(data, authorId);
-			console.log("🚀 ~ file: StepController.ts:43 ~ StepController ~ step:", step)
 			return this.sendSuccess(res, 200, 'Création de l\'étape réussie', step);
 		} catch(error) {
 			return this.sendError(res, 500, 'Echec lors de la création de l\'étape', error);
@@ -51,7 +50,6 @@ export default class StepController extends Controller {
 		try {
 			const { id } = req.params;
 			const data = req.body;
-			console.log("🚀 ~ file: StepController.ts:54 ~ StepController ~ update= ~ data:", data)
 			const step = await this.services.update(id, data);
 			return this.sendSuccess(res, 200, 'Mise à jour de l\'étape réussie', step);
 		} catch (error) {
